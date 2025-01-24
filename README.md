@@ -25,12 +25,42 @@ pip install -r requirements.txt
 
 3. Create a `.env` file in the project root with your AWS credentials:
 
+> [!NOTE]
+> The Credentials should have a permission to access the S3 bucket and Transcribe service.
+> The bucket should be created before running the application.
+
 ```
 AWS_ACCESS_KEY_ID=your_access_key
 AWS_SECRET_ACCESS_KEY=your_secret_key
 AWS_REGION=your_region
 AWS_BUCKET_NAME=your_bucket_name
 DEFAULT_OUTPUT_DIR=./transcripts  # Optional: defaults to ./transcripts if not set
+```
+
+3-1. Policy for the credentials:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["s3:GetObject", "s3:PutObject", "s3:ListBucket"],
+      "Resource": [
+        "arn:aws:s3:::your_bucket_name",
+        "arn:aws:s3:::your_bucket_name/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "transcribe:StartTranscriptionJob",
+        "transcribe:GetTranscriptionJob"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
 ```
 
 ## Usage
